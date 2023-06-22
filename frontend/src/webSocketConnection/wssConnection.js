@@ -3,7 +3,7 @@ const socket = io("http://localhost:5000/");
 
 const connectWithWebSocket = () => {
     socket.on('connection', () => {
-        console.log(socket.id); // true
+        console.log(socket.id);
     });
 }
 
