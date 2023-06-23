@@ -1,0 +1,26 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    width: 100%;
+    color: #E6E5E8;
+    margin: 0;
+}
+
+.background_main_color {
+    background-color: #8A85FF;
+}
+
+.background_secondary_color {
+    background-color: #282C34;
+}
+
+.text_main_color {
+    color: #E6E5E8;
+}
+
+.text_secondary_color {
+    color: #8A85FF; 
+}

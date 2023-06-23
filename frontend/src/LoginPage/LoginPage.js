@@ -1,9 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const LoginPage = () => {
+import './LoginPage.css';
+import logo from '../assets/logo.png';
+import UsernameInput from './components/UsernameInput';
+import SubmitButton from './components/SubmitButton';
+import { setUsername } from '../store/actions/dashboardActions'; 
+
+const LoginPage = ({ saveUsername }) => {
+  const [ username, setUsername ] = useState('');
+  const history = useHistory();
+  const handleSubmitButton = () => {
+    history.push('/dashboard');
+    saveUsername(username);
+  }
+
   return (
-    <div>LoginPage</div>
+    <div className='login-page_container background_main_color'>
+      <div className='login-page_login_box background_secondary_color'>
+        <div className='login-page_logo_container'>
+          <img className='login-page_logo_image' src={logo} alt='VideoTalkerApp'/>
+        </div>
+        <div className='login-page_title_container'>
+          <h2> Get on Board </h2>
+        </div>
+        <UsernameInput username={username} setUsername={setUsername} />
+        <SubmitButton handleSubmitButton={handleSubmitButton} />
+      </div>
+    </div>
   )
 }
 
-export default LoginPage
+const mapActionsToProps = (dispatch) => {
+  return {
+    saveUsername: username => dispatch(setUsername(username))
+  }
+}
+
+export default connect(null, mapActionsToProps)(LoginPage);
