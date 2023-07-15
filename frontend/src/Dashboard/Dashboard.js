@@ -2,6 +2,7 @@ import React from 'react';
 
 import './Dashborad.css';
 import logo from '../assets/logo.png';
+import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
 
 const Dashboard = () => {
   return (
@@ -16,7 +17,7 @@ const Dashboard = () => {
       </div>
       <div className="dashboard_right_section background_secondary_color">
         <div className="dashboard_active_users_list">
-          Users
+          <ActiveUsersList />
         </div>
         <div className='login-page_logo_container'>
           <img className='login-page_logo_image' src={logo} alt='VideoTalkerApp'/>

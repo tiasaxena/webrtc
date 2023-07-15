@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
 
 import './LoginPage.css';
@@ -7,14 +7,17 @@ import logo from '../assets/logo.png';
 import UsernameInput from './components/UsernameInput';
 import SubmitButton from './components/SubmitButton';
 import { setUsername } from '../store/actions/dashboardActions'; 
+import { registerNewUser } from '../webSocketConnection/wssConnection'
 
 const LoginPage = ({ saveUsername }) => {
   const [ username, setUsername ] = useState('');
   const history = useHistory();
+
   const handleSubmitButton = () => {
-    history.push('/dashboard');
     saveUsername(username);
-  }
+    registerNewUser(username);
+    history.push('/dashboard');
+  } 
 
   return (
     <div className='login-page_container background_main_color'>

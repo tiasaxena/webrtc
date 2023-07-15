@@ -20,22 +20,25 @@ const io = new Server(httpServer, {
         origin: "*",
         methods: ['GET', 'POST'],
         },
- });
+});
 
-//websocket server
-// const io = socket((server, {
-//     cors: {
-//         origin: "*",
-//         methods: ['GET', 'POST'],
-//     },
-// }))
+let peers = [];
 
 //callback function when client connects
 io.on('connection', (socket) => {
     //emit to the user we just connected with the frontend application
     socket.emit('connection', null);
-    //io provides unique id to the diffreent users we are connecting with
-    console.log('User connected with id: ', socket.id);
+    //io provides unique id to the different users we are connecting with
+    // console.log('User connected with id: ', socket.id);
+
+    //event-listener
+    socket.on('register-new-user', (data) => {
+        peers.push({
+            username: data.username,
+            socket: data.socketId
+        })
+        console.log('Registered new user', peers)
+    })
 })
 
 httpServer.listen(process.env.PORT, () => {
