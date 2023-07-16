@@ -42,13 +42,22 @@ io.on('connection', (socket) => {
             socketId: data.socketId
         })
         console.log('Registered new user', peers)
+        
         //tell all the active users that there is a new joinee
         io.sockets.emit('broadcast', {
             event: broadcastEventTypes.ACTIVE_USERS,
             activeUsers: peers,
-        }) 
+        });
     })
-    
+    //notify all when user leaves
+    socket.on('disconnect', () => {
+        console.log('User disconnected', socket.id);
+        peers = peers.filter(peer => peer.socketId !== socket.id);
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.ACTIVE_USERS,
+            activeUsers: peers,
+        });
+    })
 })
 
 httpServer.listen(process.env.PORT, () => {
