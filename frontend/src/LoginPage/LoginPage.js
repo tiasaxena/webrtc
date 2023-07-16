@@ -7,7 +7,7 @@ import logo from '../assets/logo.png';
 import UsernameInput from './components/UsernameInput';
 import SubmitButton from './components/SubmitButton';
 import { setUsername } from '../store/actions/dashboardActions'; 
-import { registerNewUser } from '../webSocketConnection/wssConnection'
+import { registerNewUser } from '../utils/webSocketConnection/wssConnection'
 
 const LoginPage = ({ saveUsername }) => {
   const [ username, setUsername ] = useState('');

@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import './Dashborad.css';
 import logo from '../assets/logo.png';
 import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
+import * as webRTCHandler from '../utils/webRTCHandler/webRTCHandler';
 
 const Dashboard = () => {
+  useEffect(() => {
+    webRTCHandler.getLocalStream();
+  }, []) 
   return (
     <div className='dashboard_container background_main_color'>
       <div className='dashboard_left_section'>

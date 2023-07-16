@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import connectWithWebSocket from './webSocketConnection/wssConnection';
+import connectWithWebSocket from './utils/webSocketConnection/wssConnection';
 
 import Login from './LoginPage/LoginPage';
 import Dashboard from './Dashboard/Dashboard';

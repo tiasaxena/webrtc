@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
-import store from '../store/store';
-import * as dashboardActions from '../store/actions/dashboardActions';
+import store from '../../store/store';
+import * as dashboardActions from '../../store/actions/dashboardActions';
 
 const socket = io("http://localhost:5000/");
 

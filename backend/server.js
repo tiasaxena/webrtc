@@ -49,6 +49,7 @@ io.on('connection', (socket) => {
             activeUsers: peers,
         });
     })
+    
     //notify all when user leaves
     socket.on('disconnect', () => {
         console.log('User disconnected', socket.id);
