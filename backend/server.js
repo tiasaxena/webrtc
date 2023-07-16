@@ -23,6 +23,10 @@ const io = new Server(httpServer, {
 });
 
 let peers = [];
+const broadcastEventTypes = {
+    ACTIVE_USERS: 'ACTIVE_USERS',
+    GROUP_CALL_ROOMS: 'GROUP_CALL_ROOMS',
+}
 
 //callback function when client connects
 io.on('connection', (socket) => {
@@ -35,10 +39,16 @@ io.on('connection', (socket) => {
     socket.on('register-new-user', (data) => {
         peers.push({
             username: data.username,
-            socket: data.socketId
+            socketId: data.socketId
         })
         console.log('Registered new user', peers)
+        //tell all the active users that there is a new joinee
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.ACTIVE_USERS,
+            activeUsers: peers,
+        }) 
     })
+    
 })
 
 httpServer.listen(process.env.PORT, () => {
