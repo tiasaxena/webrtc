@@ -1,5 +1,5 @@
 import store from '../../store/store';
-import { setLocalStream } from '../../store/actions/callActions';
+import { callStates, setCallState, setLocalStream } from '../../store/actions/callActions';
 
 const DEFAULT_CONSTRAINTS = {
     video: true,
@@ -11,6 +11,7 @@ export const getLocalStream = () => {
     navigator.mediaDevices.getUserMedia(DEFAULT_CONSTRAINTS)
         .then(stream => {
             store.dispatch(setLocalStream(stream))
+            store.disptch(setCallState(callStates.CALL_AVAILABLE))
         })
         .catch(error => {
             console.log("Failed to fetch the user video");

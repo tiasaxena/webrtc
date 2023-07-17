@@ -2,6 +2,7 @@ import * as callActions from '../actions/callActions';
 
 const initialState = {
     localStream: null,
+    callState: callActions.callStates.CALL_UNAVAILABLE, 
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -11,6 +12,11 @@ const dashboardReducer = (state = initialState, action) => {
                 ...state,
                 localStream: action.localStream
             };
+        case callActions.CALL_SET_CALL_STATE:
+            return {
+                ...state,
+                callState: action.callState 
+            }
         default: 
             return state;
     }
