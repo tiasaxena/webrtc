@@ -4,6 +4,7 @@ import './Dashborad.css';
 import logo from '../assets/logo.png';
 import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
 import * as webRTCHandler from '../utils/webRTCHandler/webRTCHandler';
+import DirectCall from './components/ActiveUsersList/DirectCall/DirectCall';
 
 const Dashboard = () => {
   useEffect(() => {
@@ -13,7 +14,7 @@ const Dashboard = () => {
     <div className='dashboard_container background_main_color'>
       <div className='dashboard_left_section'>
         <div className="dashboard_content_container">
-          Content
+          <DirectCall/>
         </div>
         <div className="dashboard_rooms_container background_secondary_color">
           Rooms
