@@ -6,6 +6,7 @@ const initialState = {
 };
 
 const dashboardReducer = (state = initialState, action) => {
+    // dashboardAction has --> 1. type, 2. username 
     switch(action.type){
         case dashboardActions.DASHBOARD_SET_USERNAME:
             return {

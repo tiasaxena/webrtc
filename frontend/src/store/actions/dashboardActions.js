@@ -11,6 +11,6 @@ export const setActiveUsers = (activeUsers) => {
 export const setUsername = (username) => {
     return {
         type: DASHBOARD_SET_USERNAME,
-        username,
+        username, //username: username
     };
 };

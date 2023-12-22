@@ -16,7 +16,7 @@ const styles = {
 }
 
 const LocalVideoView = ({ localStream }) => {
-  // ref is like document.selectById
+  // ref is like document.getElementById
   const localVideoRef = useRef();
   useEffect(() => {
     if(localStream) {

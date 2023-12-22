@@ -12,7 +12,7 @@ const styles = {
 }
 
 const RemoteVideoView = ({ remoteStream }) => {
-  // ref is like document.selectById
+  // ref is like document.getElementById
   const remoteVideoRef = useRef();
   useEffect(() => {
     if(remoteStream) {
