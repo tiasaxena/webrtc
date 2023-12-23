@@ -34,10 +34,16 @@ const connectWithWebSocket = () => {
     handleBroadcastEvents (data);
   });
 
-  //listeners related to direct call
+  /* _________________________listeners related to direct call________________________________*/
   socket.on('pre-offer', (data) => {
     webRTCHandler.handlePreOffer(data);
   })
+
+  socket.on('pre-offer-answer', data => {
+    webRTCHandler.handlePreOfferAnswer(data);
+  })
+
+  /* _________________________________________________________________________________________*/
 };
 
 export const registerNewUser = username => {

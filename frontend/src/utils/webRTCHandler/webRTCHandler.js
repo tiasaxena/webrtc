@@ -69,6 +69,17 @@ export const handlePreOffer = data => {
   }
 };
 
+export const handlePreOfferAnswer = (data) => {
+  let rejectionReason;
+  if(data.answer === preOfferAnswers.CALL_ACCEPTED) {
+    //send pre-offer web RTC answer
+  } else if(data.answer === preOfferAnswers.CALL_NOT_AVAILABLE) {
+    rejectionReason = 'Not available for the call at the moment!';
+  } else {
+    rejectionReason = 'Call Rejected!';
+  }
+}
+
 // accept incoming call request
 export const acceptIncomingCallRequest = () => {
   wss.sendPreOfferAnswer({
@@ -79,13 +90,13 @@ export const acceptIncomingCallRequest = () => {
 
 // reject incoming call request
 export const rejectIncomingCallRequest = () => {
-  // reset the caller's status
-  resetCallData();
-
   wss.sendPreOfferAnswer({
     callerSocketId: connectedUserSocketId,
     answer: preOfferAnswers.CALL_REJECTED
   })
+
+  // reset the caller's status
+  resetCallData();
 };
 
 //function to check if the call can be answered

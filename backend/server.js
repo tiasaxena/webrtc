@@ -61,7 +61,8 @@ io.on('connection', (socket) => {
         });
     })
 
-    //event listeners related to direct call
+    /* ___________________ event listeners related to direct call ________________________ */
+    
     socket.on('pre-offer', (data) => {
         console.log("Pre-offer handled");
         // caller sends details to callee
@@ -70,6 +71,15 @@ io.on('connection', (socket) => {
             callerSocketId: socket.id,
         })
     })
+
+    socket.on('pre-offer-answer', (data) => {
+        console.log("Handled pre offer answer");
+        io.to(callerSocketId).emit('pre-offer-answer', {
+            answer: data.answer
+        })
+    })
+
+    /* ____________________________________________________________________________________ */
 })
 
 httpServer.listen(process.env.PORT, () => {
