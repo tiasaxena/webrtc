@@ -74,7 +74,7 @@ io.on('connection', (socket) => {
 
     socket.on('pre-offer-answer', (data) => {
         console.log("Handled pre offer answer");
-        io.to(callerSocketId).emit('pre-offer-answer', {
+        io.to(data.callerSocketId).emit('pre-offer-answer', {
             answer: data.answer
         })
     })

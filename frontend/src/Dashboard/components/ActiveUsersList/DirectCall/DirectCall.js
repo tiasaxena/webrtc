@@ -6,22 +6,30 @@ import RemoteVideoView from '../../RemoteVideoView/RemoteVideoView';
 import IncomingCallDialog from '../../IncomingCallDialog/IncomingCallDialog';
 import CallRejectedDialog from '../../CallRejectedDialog/CallRejectedDialog';
 import CallingDialog from '../../CallingDialog/CallingDialog';
-import {callStates} from '../../../../store/actions/callActions';
+import {
+  callStates,
+  setCallRejected,
+} from '../../../../store/actions/callActions';
 
-const DirectCall = ({call}) => {
+const DirectCall = ({call, hideCallRejectedDialog}) => {
   const {
     localStream,
     remoteStream,
     callState,
     callerUsername,
     callingDialogVisible,
+    callRejected,
   } = call;
 
   return (
     <div>
       <LocalVideoView localStream={localStream} />
       {remoteStream && <RemoteVideoView remoteStream={remoteStream} />}
-      {/* <CallRejectedDialog/> */}
+      {callRejected.rejected &&
+        <CallRejectedDialog
+          reason={callRejected.reason}
+          hideCallRejectedDialog={hideCallRejectedDialog}
+        />}
       {callState === callStates.CALL_REQUESTED &&
         <IncomingCallDialog callerUsername={callerUsername} />}
       {callingDialogVisible && <CallingDialog />}
@@ -36,4 +44,13 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect (mapStateToProps, null) (DirectCall);
+const mapDispatchToProps = dispatch => {
+  return {
+    hideCallRejectedDialog: callRejectedDetails => {
+      console.log('callRejectedDetails', callRejectedDetails);
+      dispatch (setCallRejected (callRejectedDetails));
+    }
+  };
+};
+
+export default connect (mapStateToProps, mapDispatchToProps) (DirectCall);

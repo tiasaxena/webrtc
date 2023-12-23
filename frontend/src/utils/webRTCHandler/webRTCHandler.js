@@ -1,6 +1,7 @@
 import store from '../../store/store';
 import {
   callStates,
+  setCallRejected,
   setCallState,
   setCallerUsername,
   setCallingDialogVisible,
@@ -62,41 +63,49 @@ export const handlePreOffer = data => {
     store.dispatch (setCallerUsername (data.callerUsername));
     store.dispatch (setCallState (callStates.CALL_REQUESTED));
   } else {
-    wss.sendPreOfferAnswer({
+    wss.sendPreOfferAnswer ({
       callerSocketId: data.callerSocketId,
       answer: preOfferAnswers.CALL_NOT_AVAILABLE,
-    })
+    });
   }
 };
 
-export const handlePreOfferAnswer = (data) => {
-  let rejectionReason;
-  if(data.answer === preOfferAnswers.CALL_ACCEPTED) {
+export const handlePreOfferAnswer = data => {
+  store.dispatch(setCallingDialogVisible(false));
+  
+  if (data.answer === preOfferAnswers.CALL_ACCEPTED) {
     //send pre-offer web RTC answer
-  } else if(data.answer === preOfferAnswers.CALL_NOT_AVAILABLE) {
-    rejectionReason = 'Not available for the call at the moment!';
   } else {
-    rejectionReason = 'Call Rejected!';
+    let rejectionReason;
+    if (data.answer === preOfferAnswers.CALL_NOT_AVAILABLE) {
+      rejectionReason = 'Not available for the call at the moment!';
+    } else {
+      rejectionReason = 'Call Rejected!';
+    }
+    store.dispatch(setCallRejected({
+      rejected: true,
+      reason: rejectionReason,
+    }))
   }
-}
+};
 
 // accept incoming call request
 export const acceptIncomingCallRequest = () => {
-  wss.sendPreOfferAnswer({
+  wss.sendPreOfferAnswer ({
     callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_ACCEPTED
-  })
+    answer: preOfferAnswers.CALL_ACCEPTED,
+  });
 };
 
 // reject incoming call request
 export const rejectIncomingCallRequest = () => {
-  wss.sendPreOfferAnswer({
+  wss.sendPreOfferAnswer ({
     callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_REJECTED
-  })
+    answer: preOfferAnswers.CALL_REJECTED,
+  });
 
   // reset the caller's status
-  resetCallData();
+  resetCallData ();
 };
 
 //function to check if the call can be answered
@@ -112,5 +121,5 @@ export const checkIfCallIsPossible = () => {
 
 export const resetCallData = () => {
   connectedUserSocketId = null;
-  store.dispatch(setCallState(callStates.CALL_AVAILABLE));
-}
+  store.dispatch (setCallState (callStates.CALL_AVAILABLE));
+};
