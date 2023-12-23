@@ -104,7 +104,7 @@ export const handlePreOfferAnswer = data => {
   store.dispatch(setCallingDialogVisible(false));
 
   if (data.answer === preOfferAnswers.CALL_ACCEPTED) {
-    //send pre-offer web RTC answer
+    
   } else {
     let rejectionReason;
     if (data.answer === preOfferAnswers.CALL_NOT_AVAILABLE) {
@@ -122,6 +122,18 @@ export const handlePreOfferAnswer = data => {
     resetCallData();
   }
 };
+
+// Send webRTC Offer to the callee
+const sendOffer = async () => {
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+
+  wss.sendWebRTCOffer({
+    calleeSocketId: connectedUserSocketId,
+    offer: offer,
+  })
+}
+
 
 // accept incoming call request
 export const acceptIncomingCallRequest = () => {

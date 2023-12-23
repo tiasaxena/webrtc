@@ -56,6 +56,7 @@ export const registerNewUser = username => {
 // Emitting events to server related to direct calling
 // 1. Send Pre Offer
 // 2. Pre Offer Answer
+// 3. Send WebRTCOffer
 
 /* ______________________________________________________________________________________________ */
 
@@ -65,6 +66,10 @@ export const sendPreOffer = (data) => {
 
 export const sendPreOfferAnswer = (data) => {
   socket.emit('pre-offer-answer', data);
+}
+
+export const sendWebRTCOffer = (data) => {
+  socket.emit('webRTC-offer', data);
 }
 
 /* ______________________________________________________________________________________________ */
