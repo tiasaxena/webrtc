@@ -64,6 +64,7 @@ io.on('connection', (socket) => {
     //event listeners related to direct call
     socket.on('pre-offer', (data) => {
         console.log("Pre-offer handled");
+        // caller sends details to callee
         io.to(data.callee.socketId).emit('pre-offer', {
             callerUsername: data.caller.username,
             callerSocketId: socket.id,

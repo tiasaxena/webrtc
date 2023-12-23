@@ -13,6 +13,14 @@ const DEFAULT_CONSTRAINTS = {
   audio: true,
 };
 
+// pre-offer answers
+const preOfferAnswers = {
+  CALL_REJECTED: 'CALL_REJECTED',
+  CALL_ACCEPTED: 'CALL_ACCEPTED',
+  // if we don't get access to the local stream or the call state is different froms call avilable
+  CALL_NOT_AVAILABLE: 'CALL_NOT_AVAILABLE',
+};
+
 export const getLocalStream = () => {
   //* getDisplayMedia() method prompts the user to select and grant permission to capture the contents of a display. It returns MediaStream object which can be transmitted to other peer using WebRTC.
   navigator.mediaDevices
@@ -31,9 +39,10 @@ let connectedUserSocketId;
 
 // Function to call other users
 // calleeDetails will be obtained from the active user list items
+// calleeDetails is actually the activeuser arguemnt passed while invoking the function
 export const callToOtherUser = calleeDetails => {
   connectedUserSocketId = calleeDetails.socketId;
-  // dispatch to set the call stae in progress
+  // dispatch to set the call state in progress
   store.dispatch (setCallState (callStates.CALL_IN_PROGRESS));
   store.dispatch (setCallingDialogVisible (true));
 
@@ -41,13 +50,56 @@ export const callToOtherUser = calleeDetails => {
   wss.sendPreOffer ({
     callee: calleeDetails,
     caller: {
-      username: store.getState().mainReducer.dashboard.username,
+      username: store.getState ().mainReducer.dashboard.username,
     },
   });
 };
 
 export const handlePreOffer = data => {
-  connectedUserSocketId = data.callerSocketId;
-  store.dispatch (setCallerUsername (data.callerUsername));
-  store.dispatch (setCallState (callStates.CALL_REQUESTED));
+  if (checkIfCallIsPossible ()) {
+    // update the store
+    connectedUserSocketId = data.callerSocketId;
+    store.dispatch (setCallerUsername (data.callerUsername));
+    store.dispatch (setCallState (callStates.CALL_REQUESTED));
+  } else {
+    wss.sendPreOfferAnswer({
+      callerSocketId: data.callerSocketId,
+      answer: preOfferAnswers.CALL_NOT_AVAILABLE,
+    })
+  }
 };
+
+// accept incoming call request
+export const acceptIncomingCallRequest = () => {
+  wss.sendPreOfferAnswer({
+    callerSocketId: connectedUserSocketId,
+    answer: preOfferAnswers.CALL_ACCEPTED
+  })
+};
+
+// reject incoming call request
+export const rejectIncomingCallRequest = () => {
+  // reset the caller's status
+  resetCallData();
+
+  wss.sendPreOfferAnswer({
+    callerSocketId: connectedUserSocketId,
+    answer: preOfferAnswers.CALL_REJECTED
+  })
+};
+
+//function to check if the call can be answered
+export const checkIfCallIsPossible = () => {
+  if (
+    store.getState ().mainReducer.call.localStream === null ||
+    store.getState ().mainReducer.call.callState !== callStates.CALL_AVAILABLE
+  ) {
+    return false;
+  }
+  return true;
+};
+
+export const resetCallData = () => {
+  connectedUserSocketId = null;
+  store.dispatch(setCallState(callStates.CALL_AVAILABLE));
+}

@@ -34,7 +34,7 @@ const connectWithWebSocket = () => {
     handleBroadcastEvents (data);
   });
 
-  //listeners relatedto direct call
+  //listeners related to direct call
   socket.on('pre-offer', (data) => {
     webRTCHandler.handlePreOffer(data);
   })
@@ -47,9 +47,20 @@ export const registerNewUser = username => {
   });
 };
 
-// Emitting events to server realted to direct calling
+// Emitting events to server related to direct calling
+// 1. Send Pre Offer
+// 2. Pre Offer Answer
+
+/* ______________________________________________________________________________________________ */
+
 export const sendPreOffer = (data) => {
   socket.emit('pre-offer', data);
 }
+
+export const sendPreOfferAnswer = (data) => {
+  socket.emit('pre-offer-answer', data);
+}
+
+/* ______________________________________________________________________________________________ */
 
 export default connectWithWebSocket;
