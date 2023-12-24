@@ -125,6 +125,10 @@ export const handlePreOfferAnswer = data => {
 
 // Send webRTC Offer to the callee
 const sendOffer = async () => {
+  //* The createOffer() function creates a SDP offer which includes information about any  MediaStreamTracks already attached to the WebRTC session, codec, and options supported by the browser, and any candidates already gathered by the ICE agent, for the purpose of being sent over the signaling channel (in our application Socket.IO) to a potential peer to request a connection or to update the configuration of an existing connection.
+  
+  //* The SDP is an important part of the WebRTC. It is a protocol that is intended to describe media communication sessions. It does not deliver the media data but is used for negotiation between peers of various audio and video codecs, network topologies, and other device information. It also needs to be easily transportable.
+  
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
 
@@ -134,6 +138,25 @@ const sendOffer = async () => {
   })
 }
 
+/* ________________________________ EXHANGING SDP _________________________________________________ */
+
+export const handleWebRTCOffer = async (data) => {
+  await peerConnection.setRemoteDescription(data.offer);
+  const answer = await peerConnection.createAnswer();
+  // set the answer as the callee's local description
+  await peerConnection.setRemoteDescription(answer);
+  wss.sendWebRTCAnswer({
+    calleeSocketId: connectedUserSocketId,
+    answer: answer,
+  })
+}
+
+export const handleWebRTCAnswer = async(data) => {
+  await peerConnection.setRemoteDescription(data.answer);
+
+}
+
+/* ________________________________________________________________________________________________ */
 
 // accept incoming call request
 export const acceptIncomingCallRequest = () => {
