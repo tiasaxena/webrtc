@@ -51,6 +51,10 @@ const connectWithWebSocket = () => {
     webRTCHandler.handleWebRTCAnswer(data);
   })
 
+  socket.on('ICE-candidate', data => {
+    webRTCHandler.handleICECandidate(data);
+  })
+
   /* _________________________________________________________________________________________*/
 };
 
@@ -66,6 +70,7 @@ export const registerNewUser = username => {
 // 2. Pre Offer Answer
 // 3. Send WebRTCOffer
 // 4. Send WebRTAnswer
+// 5. Send ICE Candidate 
 
 /* ______________________________________________________________________________________________ */
 
@@ -83,6 +88,10 @@ export const sendWebRTCOffer = (data) => {
 
 export const sendWebRTCAnswer = (data) => {
   socket.emit('webRTC-answer', data);
+}
+
+export const sendICECandidate = (data) => {
+  socket.emit('ICE-candidate', data);
 }
 
 /* ______________________________________________________________________________________________ */

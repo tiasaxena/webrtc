@@ -90,7 +90,14 @@ io.on('connection', (socket) => {
         console.log("Handle webRTC Answer ");
         io.to(data.callerSocketId).emit('webRTC-answer', {
             answer: data.answer
-        })
+        });
+    })
+
+    socket.on('ICE-candidate', (data) => {
+        console.log("Handling ICE Candidates transfer");
+        io.to(data.callerSocketId).emit('ICE-candidate', {
+            candidate: data.candidate,
+        });
     })
 
     /* ____________________________________________________________________________________ */

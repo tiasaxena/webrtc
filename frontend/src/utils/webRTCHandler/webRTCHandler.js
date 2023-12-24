@@ -61,10 +61,16 @@ export const createPeerConnection = () => {
   peerConnection.ontrack = ({ streams: [stream] }) => {
     // Dispatch remote stream in the store
   }
-
   // Event listner when we get the ICE candidates from the stun server we defined above
   peerConnection.onicecandidate = (event) => {
     // Send to the connected user our ICE candidates.
+    if(event.candidate) {
+      // send ice candidates to other users
+      wss.sendICECandidate({
+        candidate: event.candidate,
+        connectedUserSocketId: connectedUserSocketId,
+      })
+    }
   } 
 }
 
@@ -138,7 +144,7 @@ const sendOffer = async () => {
   })
 }
 
-/* ________________________________ EXHANGING SDP _________________________________________________ */
+/* ___________________________ EXHANGING SDP(includes media information) _________________________ */
 
 export const handleWebRTCOffer = async (data) => {
   await peerConnection.setRemoteDescription(data.offer);
@@ -153,8 +159,20 @@ export const handleWebRTCOffer = async (data) => {
 
 export const handleWebRTCAnswer = async(data) => {
   await peerConnection.setRemoteDescription(data.answer);
-
 }
+
+/* ________________________________________________________________________________________________ */
+
+
+/* __________________ EXHANGING ICE CANDIDATES(information about network connection) ______________ */
+
+export const handleICECandidate = async (data) => {
+  try {
+    await peerConnection.addIceCandidate(data.candidate);
+  } catch(err) {
+    console.log("Error occured while trying to add ICE Candidates recevied from the STUN server", err);
+  }
+} 
 
 /* ________________________________________________________________________________________________ */
 
