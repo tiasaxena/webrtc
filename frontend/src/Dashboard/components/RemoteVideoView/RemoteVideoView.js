@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 
 const styles = {
   videoContainer: {
-    width: '100%',
+    width: 'calc(100vw - 20% - 150px - 10rem)',
     height: '100%',
   },
   videoElement: {
@@ -16,7 +16,7 @@ const RemoteVideoView = ({ remoteStream }) => {
   const remoteVideoRef = useRef();
   useEffect(() => {
     if(remoteStream) {
-      const remoteVideo = remoteVideoRef.current();
+      const remoteVideo = remoteVideoRef.current;
       remoteVideo.srcObject = remoteStream;
 
       // autoplay does not work for some browsers
@@ -28,7 +28,7 @@ const RemoteVideoView = ({ remoteStream }) => {
 
   return (
     <div style={styles.videoContainer}>
-      <video  style={styles.videoElement}src={remoteVideoRef} autoPlay></video>
+      <video  style={styles.videoElement} ref={remoteVideoRef} autoPlay muted></video>
     </div>
   )
 }

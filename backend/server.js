@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
 
     socket.on('webRTC-offer', (data) => {
         console.log("Handled WebRTC offer");
-        io.to(data.callerSocketId).emit('webRTC-offer', {
+        io.to(data.calleeSocketId).emit('webRTC-offer', {
             offer: data.offer,
         });
     })  
@@ -95,7 +95,7 @@ io.on('connection', (socket) => {
 
     socket.on('ICE-candidate', (data) => {
         console.log("Handling ICE Candidates transfer");
-        io.to(data.callerSocketId).emit('ICE-candidate', {
+        io.to(data.connectedUserSocketId).emit('ICE-candidate', {
             candidate: data.candidate,
         });
     })

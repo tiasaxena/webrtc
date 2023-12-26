@@ -22,7 +22,7 @@ const DirectCall = ({call, hideCallRejectedDialog}) => {
   } = call;
 
   return (
-    <div>
+    <>
       <LocalVideoView localStream={localStream} />
       {remoteStream && <RemoteVideoView remoteStream={remoteStream} />}
       {callRejected.rejected &&
@@ -33,7 +33,7 @@ const DirectCall = ({call, hideCallRejectedDialog}) => {
       {callState === callStates.CALL_REQUESTED &&
         <IncomingCallDialog callerUsername={callerUsername} />}
       {callingDialogVisible && <CallingDialog />}
-    </div>
+    </>
   );
 };
 
@@ -47,7 +47,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     hideCallRejectedDialog: callRejectedDetails => {
-      console.log('callRejectedDetails', callRejectedDetails);
       dispatch (setCallRejected (callRejectedDetails));
     }
   };

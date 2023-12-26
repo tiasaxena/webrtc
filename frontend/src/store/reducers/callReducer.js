@@ -8,7 +8,8 @@ const initialState = {
     callRejected: {
         rejected: false,
         reason: '',
-    }
+    },
+    remoteStream: null,
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -37,6 +38,11 @@ const dashboardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 callRejected: action.callRejected,
+            }
+        case callActions.CALL_SET_REMOTE_STREAM:
+            return  {
+                ...state,
+                remoteStream: action.remoteStream,
             }
         default: 
             return state;

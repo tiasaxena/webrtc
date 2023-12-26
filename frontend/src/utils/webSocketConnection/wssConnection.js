@@ -5,7 +5,7 @@ import store from '../../store/store';
 import * as dashboardActions from '../../store/actions/dashboardActions';
 import * as webRTCHandler from '../webRTCHandler/webRTCHandler';
 
-const socket = io ('http://localhost:5000/');
+const socket = io ('http://localhost:8000/');
 
 const broadcastEventTypes = {
   ACTIVE_USERS: 'ACTIVE_USERS',

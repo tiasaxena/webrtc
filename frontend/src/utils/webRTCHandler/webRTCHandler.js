@@ -5,7 +5,8 @@ import {
   setCallState,
   setCallerUsername,
   setCallingDialogVisible,
-  setLocalStream
+  setLocalStream,
+  setRemoteStream
 } from "../../store/actions/callActions";
 import * as wss from "../webSocketConnection/wssConnection";
 
@@ -24,11 +25,7 @@ const preOfferAnswers = {
 
 let connectedUserSocketId;
 let peerConnection;
-let configuration = {
-  iceServers: [{
-    urls: 'stun:stun.l.google.com:13902'
-  }],
-}
+const configuration = {'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]}
 
 export const getLocalStream = () => {
   //* getDisplayMedia() method prompts the user to select and grant permission to capture the contents of a display. It returns MediaStream object which can be transmitted to other peer using WebRTC.
@@ -47,22 +44,23 @@ export const getLocalStream = () => {
 };
 
 // Function to create local peer connection
-export const createPeerConnection = () => {
+const createPeerConnection = () => {
   // The peer connection is made with every user
   peerConnection = new RTCPeerConnection(configuration);
   // Get access to local stream
   // We will add to our peer connection the tracks which are included in the local stream, which are the audio and the video track
-  const localStream = store.getState().call.localStream;
-  for (const track of localStream.getTrack()) {
+  const localStream = store.getState().mainReducer.call.localStream;
+  for (const track of localStream.getTracks()) {
     peerConnection.addTrack(track, localStream);
   }
 
   // Event listener when other users connect, we get their streams
   peerConnection.ontrack = ({ streams: [stream] }) => {
-    // Dispatch remote stream in the store
+    store.dispatch(setRemoteStream(stream));
   }
   // Event listner when we get the ICE candidates from the stun server we defined above
   peerConnection.onicecandidate = (event) => {
+    console.log("Getting candidates from STUN server.", event.candidate);
     // Send to the connected user our ICE candidates.
     if(event.candidate) {
       // send ice candidates to other users
@@ -71,7 +69,13 @@ export const createPeerConnection = () => {
         connectedUserSocketId: connectedUserSocketId,
       })
     }
-  } 
+  }
+
+  peerConnection.onconnectionstatechange = (event) => {
+    if (peerConnection.connectionState === 'connected') {
+      console.log('succesfully connected with other peer');
+    }
+  };
 }
 
 // Function to call other users
@@ -106,11 +110,32 @@ export const handlePreOffer = data => {
   }
 };
 
+// accept incoming call request
+export const acceptIncomingCallRequest = () => {
+  wss.sendPreOfferAnswer({
+    callerSocketId: connectedUserSocketId,
+    answer: preOfferAnswers.CALL_ACCEPTED
+  });
+
+  store.dispatch(setCallState(callStates.CALL_IN_PROGRESS));
+};
+
+// reject incoming call request
+export const rejectIncomingCallRequest = () => {
+  wss.sendPreOfferAnswer({
+    callerSocketId: connectedUserSocketId,
+    answer: preOfferAnswers.CALL_REJECTED
+  });
+
+  // reset the caller's status
+  resetCallData();
+};
+
 export const handlePreOfferAnswer = data => {
   store.dispatch(setCallingDialogVisible(false));
 
   if (data.answer === preOfferAnswers.CALL_ACCEPTED) {
-    
+    sendOffer();
   } else {
     let rejectionReason;
     if (data.answer === preOfferAnswers.CALL_NOT_AVAILABLE) {
@@ -150,9 +175,9 @@ export const handleWebRTCOffer = async (data) => {
   await peerConnection.setRemoteDescription(data.offer);
   const answer = await peerConnection.createAnswer();
   // set the answer as the callee's local description
-  await peerConnection.setRemoteDescription(answer);
+  await peerConnection.setLocalDescription(answer);
   wss.sendWebRTCAnswer({
-    calleeSocketId: connectedUserSocketId,
+    callerSocketId: connectedUserSocketId,
     answer: answer,
   })
 }
@@ -168,6 +193,7 @@ export const handleWebRTCAnswer = async(data) => {
 
 export const handleICECandidate = async (data) => {
   try {
+    console.log("Adding ICE Candidates");
     await peerConnection.addIceCandidate(data.candidate);
   } catch(err) {
     console.log("Error occured while trying to add ICE Candidates recevied from the STUN server", err);
@@ -176,25 +202,6 @@ export const handleICECandidate = async (data) => {
 
 /* ________________________________________________________________________________________________ */
 
-// accept incoming call request
-export const acceptIncomingCallRequest = () => {
-  wss.sendPreOfferAnswer({
-    callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_ACCEPTED
-  });
-};
-
-// reject incoming call request
-export const rejectIncomingCallRequest = () => {
-  wss.sendPreOfferAnswer({
-    callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_REJECTED
-  });
-
-  // reset the caller's status
-  resetCallData();
-};
-
 //function to check if the call can be answered
 export const checkIfCallIsPossible = () => {
   if (
@@ -202,8 +209,9 @@ export const checkIfCallIsPossible = () => {
     store.getState().mainReducer.call.callState !== callStates.CALL_AVAILABLE
   ) {
     return false;
+  } else {
+    return true;
   }
-  return true;
 };
 
 export const resetCallData = () => {
