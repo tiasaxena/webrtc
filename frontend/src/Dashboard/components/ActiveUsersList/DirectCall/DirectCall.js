@@ -10,6 +10,7 @@ import {
   callStates,
   setCallRejected,
 } from '../../../../store/actions/callActions';
+import ConversationButtons from '../../ConversationButtons/ConversationButtons';
 
 const DirectCall = ({call, hideCallRejectedDialog}) => {
   const {
@@ -33,6 +34,7 @@ const DirectCall = ({call, hideCallRejectedDialog}) => {
       {callState === callStates.CALL_REQUESTED &&
         <IncomingCallDialog callerUsername={callerUsername} />}
       {callingDialogVisible && <CallingDialog />}
+      <ConversationButtons/>
     </>
   );
 };
