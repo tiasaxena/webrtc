@@ -11,7 +11,7 @@ import {
 } from 'react-icons/md';
 
 import ConversationButton from './ConversationButton';
-import { switchForScreenSharingSystem } from '../../../utils/webRTCHandler/webRTCHandler';
+import { hangUp, switchForScreenSharingSystem } from '../../../utils/webRTCHandler/webRTCHandler';
 
 const styles = {
   buttonContainer: {
@@ -53,12 +53,16 @@ const ConversationButtons = props => {
     switchForScreenSharingSystem();
   }
 
+  const handleHangUPButtonPressed = () => {
+    hangUp();
+  }
+
   return (
     <div style={styles.buttonContainer}>
       <ConversationButton onClickHandler={handleMicButtonPressed}>
         { localMicrophoneEnabled ? <MdMic style={styles.icon} /> : <MdMicOff style={styles.icon} /> } 
       </ConversationButton>
-      <ConversationButton>
+      <ConversationButton onClickHandler={handleHangUPButtonPressed}>
         <MdCallEnd style={styles.icon} />
       </ConversationButton>
       <ConversationButton onClickHandler={handleVideoButtonPressed}>

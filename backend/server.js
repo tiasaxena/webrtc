@@ -100,6 +100,11 @@ io.on('connection', (socket) => {
         });
     })
 
+    socket.on('user-hang-up', (data) => {
+        console.log("Handling case when the user hangs up the call.");
+        io.to(data.connectedUserSocketId).emit('user-hang-up');
+    })
+
     /* ____________________________________________________________________________________ */
 })
 

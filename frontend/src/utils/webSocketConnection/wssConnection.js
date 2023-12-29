@@ -55,6 +55,10 @@ const connectWithWebSocket = () => {
     webRTCHandler.handleICECandidate(data);
   })
 
+  socket.on('user-hang-up', () => {
+      webRTCHandler.handleUserHangedUp();
+  }) 
+
   /* _________________________________________________________________________________________*/
 };
 
@@ -71,6 +75,7 @@ export const registerNewUser = username => {
 // 3. Send WebRTCOffer
 // 4. Send WebRTAnswer
 // 5. Send ICE Candidate 
+// 6. User Hangs Up
 
 /* ______________________________________________________________________________________________ */
 
@@ -92,6 +97,10 @@ export const sendWebRTCAnswer = (data) => {
 
 export const sendICECandidate = (data) => {
   socket.emit('ICE-candidate', data);
+}
+
+export const sendUserHangedUp = (data) => {
+  socket.emit('user-hang-up', data);
 }
 
 /* ______________________________________________________________________________________________ */

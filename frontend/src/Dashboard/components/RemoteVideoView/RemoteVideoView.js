@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 
 const styles = {
   videoContainer: {
-    width: 'calc(100vw - 20% - 150px - 10rem)',
+    width: '100%',
     height: '100%',
   },
   videoElement: {
