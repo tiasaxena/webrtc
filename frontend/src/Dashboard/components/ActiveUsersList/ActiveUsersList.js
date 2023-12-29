@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import './ActiveUsersList.css';
 
-const ActiveUsersList = ({ activeUsers }) => {
+const ActiveUsersList = ({ activeUsers, callState }) => {
   useEffect(() => {
   }, [activeUsers]);
   return (
@@ -13,6 +13,7 @@ const ActiveUsersList = ({ activeUsers }) => {
         <ActiveUsersListItem
           key={activeUser.socketId}
           activeUser={activeUser}
+          callState={callState}
         />)}
     </div>
   );
@@ -20,8 +21,10 @@ const ActiveUsersList = ({ activeUsers }) => {
 
 const mapStateToProps = (state) => {
   const activeUsers = state.mainReducer.dashboard.activeUsers;
+  const callState = state.mainReducer.call.callState;
   return { 
     activeUsers,
+    callState,
   }
 };
 

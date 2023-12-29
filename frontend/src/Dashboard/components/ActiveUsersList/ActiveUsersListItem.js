@@ -3,10 +3,13 @@ import React from 'react';
 import './ActiveUsersList.css';
 import userAvatar from '../../../assets/userAvatar.png';
 import { callToOtherUser } from '../../../utils/webRTCHandler/webRTCHandler';
+import { callStates } from '../../../store/actions/callActions';
 
-const ActiveUsersListItem = ({activeUser}) => {
+const ActiveUsersListItem = ({ activeUser, callState }) => {
   const handleListItem = () => {
-    callToOtherUser(activeUser);
+    if(callState === callStates.CALL_AVAILABLE) {
+      callToOtherUser(activeUser);
+    }
   };
   return (
     <div className="active_user_list_container" onClick={handleListItem}>

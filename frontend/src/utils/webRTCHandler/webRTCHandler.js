@@ -1,6 +1,7 @@
 import store from '../../store/store';
 import {
   callStates,
+  resetCallDataState,
   setCallRejected,
   setCallState,
   setCallerUsername,
@@ -175,7 +176,7 @@ const sendOffer = async () => {
 export const handleWebRTCOffer = async data => {
   await peerConnection.setRemoteDescription (data.offer);
   const answer = await peerConnection.createAnswer ();
-  // set the answer as the callee's local description
+  // Set the answer as the callee's local description
   await peerConnection.setLocalDescription (answer);
   wss.sendWebRTCAnswer ({
     callerSocketId: connectedUserSocketId,
@@ -189,7 +190,7 @@ export const handleWebRTCAnswer = async data => {
 
 /* ________________________________________________________________________________________________ */
 
-/* __________________ EXHANGING ICE CANDIDATES(information about network connection) ______________ */
+/* ___________________EXCHANGING ICE CANDIDATES(information about network connection)______________ */
 
 export const handleICECandidate = async data => {
   try {
@@ -265,16 +266,19 @@ export const hangUp = () => {
 };
 
 const resetCallDataAfterHangUp = () => {
-  store.dispatch(setRemoteStream(null));
+  if(store.getState().mainReducer.call.screenSharingActive) {
+    screenSharingStream.getTracks().forEach(track => track.stop())
+  }
 
+  store.dispatch(resetCallDataState());  
   peerConnection.close();
   peerConnection = null;
   createPeerConnection();
   resetCallData();
 
-  if(store.getState().mainReducer.call.screenSharingActive) {
-    screenSharingStream.getTracks().forEach(track => track.stop())
-  }
+  const localStream = store.getState().mainReducer.call.localStream;
+  localStream.getVideoTracks()[0].enabled = true;
+  localStream.getAudioTracks()[0].enabled = true;
 };
 
 export const resetCallData = () => {
