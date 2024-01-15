@@ -1,25 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import './GroupCallRoomsList.css';
 import GroupCallRoomsListItem from './GroupCallRoomsListItem';
 
-const dummyList = [
-    {
-        roomId: "123",
-        hostName: "Tia"
-    },
-    {
-        roomId: "4932",
-        hostName: 'Mia',
-    }
-]
-
-const GroupCallRoomsList = () => {
+const GroupCallRoomsList = ({ groupCallRooms }) => {
   return (
     <>
-        { dummyList.map(room => <GroupCallRoomsListItem key={room.roomId} room={room} />)}
+      { groupCallRooms.map(room => <GroupCallRoomsListItem key={room.roomId} room={room} />)}
     </>
   )
 }
 
-export default GroupCallRoomsList
+const mapStateToProps = (store) => {
+  const groupCallRooms = store.mainReducer.dashboard.groupCallRooms;
+  return {
+    groupCallRooms,
+  }
+};
+
+export default connect(mapStateToProps) (GroupCallRoomsList)

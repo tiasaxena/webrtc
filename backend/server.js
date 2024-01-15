@@ -57,12 +57,18 @@ io.on('connection', (socket) => {
         })
         console.log('Registered new user', peers)
         
-        //tell all the active users that there is a new joinee
+        // Tell all the active users that there is a new joinee
         io.sockets.emit('broadcast', {
             event: broadcastEventTypes.ACTIVE_USERS,
             activeUsers: peers,
         });
-    })
+
+        // Tell all the users about the group call rooms
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.GROUP_CALL_ROOMS,
+            groupCallRooms,
+        });
+    });
     
     //notify all when user leaves
     socket.on('disconnect', () => {
@@ -72,7 +78,7 @@ io.on('connection', (socket) => {
             event: broadcastEventTypes.ACTIVE_USERS,
             activeUsers: peers,
         });
-    })
+    });
 
     /* ___________________ event listeners related to direct call ________________________ */
     
@@ -83,40 +89,40 @@ io.on('connection', (socket) => {
             callerUsername: data.caller.username,
             callerSocketId: socket.id,
         })
-    })
+    });
 
     socket.on('pre-offer-answer', (data) => {
         console.log("Handled pre-offer answer");
         io.to(data.callerSocketId).emit('pre-offer-answer', {
             answer: data.answer
         })
-    })
+    });
 
     socket.on('webRTC-offer', (data) => {
         console.log("Handled WebRTC offer");
         io.to(data.calleeSocketId).emit('webRTC-offer', {
             offer: data.offer,
         });
-    })  
+    }); 
 
     socket.on('webRTC-answer', (data) => {
         console.log("Handle webRTC Answer ");
         io.to(data.callerSocketId).emit('webRTC-answer', {
             answer: data.answer
         });
-    })
+    });
 
     socket.on('ICE-candidate', (data) => {
         console.log("Handling ICE Candidates transfer");
         io.to(data.connectedUserSocketId).emit('ICE-candidate', {
             candidate: data.candidate,
         });
-    })
+    });
 
     socket.on('user-hang-up', (data) => {
         console.log("Handling case when the user hangs up the call.");
         io.to(data.connectedUserSocketId).emit('user-hang-up');
-    })
+    });
     
     /* ___________________ event listeners related to group call ________________________ */
 
@@ -131,8 +137,12 @@ io.on('connection', (socket) => {
             roomId: roomId,
         };
         groupCallRooms.push(newGroupCallRoom);
-        console.log(groupCallRooms);
-    })
+
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.GROUP_CALL_ROOMS,
+            groupCallRooms,
+        });
+    });
 
     /* ____________________________________________________________________________________ */
 })

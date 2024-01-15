@@ -20,6 +20,9 @@ const handleBroadcastEvents = data => {
       );
       store.dispatch (dashboardActions.setActiveUsers (activeUsers));
       break;
+    case broadcastEventTypes.GROUP_CALL_ROOMS:
+      store.dispatch(dashboardActions.setGroupCalls(data.groupCallRooms))
+      break;
     default:
       break;
   }
