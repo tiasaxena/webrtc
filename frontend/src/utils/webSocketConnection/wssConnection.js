@@ -69,6 +69,11 @@ export const registerNewUser = username => {
   });
 };
 
+// Emitting events to server related to group calls
+export const registerGroupCall = (data) => {
+  socket.emit('register-group-call', data);
+}
+
 // Emitting events to server related to direct calling
 // 1. Send Pre Offer
 // 2. Pre Offer Answer

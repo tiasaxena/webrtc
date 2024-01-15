@@ -5,6 +5,7 @@ const { Server } = require("socket.io");
 // Express signalling server for group calls and answer to the group calls
 const { ExpressPeerServer } = require('peer');
 const groupCallHandler = require('./groupCallHandler');
+const { v4: uuid4 } = require('uuid');
 
 require('dotenv').config()
 
@@ -34,6 +35,8 @@ app.use('/peerjs', peerServer);
 groupCallHandler.createPeerServerListener(peerServer);
 
 let peers = [];
+let groupCallRooms = [];
+
 const broadcastEventTypes = {
     ACTIVE_USERS: 'ACTIVE_USERS',
     GROUP_CALL_ROOMS: 'GROUP_CALL_ROOMS',
@@ -113,6 +116,22 @@ io.on('connection', (socket) => {
     socket.on('user-hang-up', (data) => {
         console.log("Handling case when the user hangs up the call.");
         io.to(data.connectedUserSocketId).emit('user-hang-up');
+    })
+    
+    /* ___________________ event listeners related to group call ________________________ */
+
+    socket.on('group-call-register', (data) => {
+        const roomId = uuid4();
+        socket.join(roomId);
+
+        const newGroupCallRoom = {
+            peerId: data.peerId,
+            hostName: data.username,
+            socketId: socket.id,
+            roomId: roomId,
+        };
+        groupCallRooms.push(newGroupCallRoom);
+        console.log(groupCallRooms);
     })
 
     /* ____________________________________________________________________________________ */

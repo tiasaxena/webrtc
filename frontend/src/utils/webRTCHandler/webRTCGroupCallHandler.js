@@ -1,5 +1,9 @@
+import store from '../../store/store';
+import * as wss from '../../utils/webSocketConnection/wssConnection'
+
 // Create a connection to the peer server in backend
 let myPeer;
+let myPeerId;
 
 export const connectWithMyPeer = () => {
     // undefined(first param) tells that peer server will create client ids for us on its own
@@ -10,7 +14,14 @@ export const connectWithMyPeer = () => {
     } );
 
     myPeer.on('open', (id) => {
-        console.log("Sucessfully connected to the peer server");
-        console.log(id);
+        console.log("Sucessfully connected to the peer server", id);
+        myPeerId = id;
     });
+}
+
+export const createNewGroupCall = () => {
+    wss.registerGroupCall({
+        username: store.getState().mainReducer.dashboard.username,
+        perrId: myPeerId,
+    })
 }

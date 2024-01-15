@@ -3,10 +3,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 import { callStates } from '../../../store/actions/callActions';
 import GroupCallButton from '../GroupCallButton/GroupCallButton';
+import * as webRTCGroupCallHandler from '../../../utils/webRTCHandler/webRTCGroupCallHandler';
 
 const GroupCall = ({ callState, localStream }) => {
   const createRoom = () => {
-    //create room
+    webRTCGroupCallHandler.createNewGroupCall();
   };
   console.log("call state", callState);
   console.log("localStream", localStream);
