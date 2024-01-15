@@ -66,7 +66,7 @@ const connectWithWebSocket = () => {
 
   /* _________________________________________________________________________________________*/
 
-   /* _________________________listeners related to group call________________________________*/
+  /* _________________________listeners related to group call________________________________*/
    socket.on('group-call-request', (data) => {
     webRTCGroupCallHandler.connectToNewUser(data);
   });
