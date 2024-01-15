@@ -2,6 +2,9 @@ const express = require('express');
 // const socket = require('socket.io');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+// Express signalling server for group calls and answer to the group calls
+const { ExpressPeerServer } = require('peer');
+const groupCallHandler = require('./groupCallHandler');
 
 require('dotenv').config()
 
@@ -22,6 +25,13 @@ const io = new Server(httpServer, {
         methods: ['GET', 'POST'],
         },
 });
+// Peer Server
+const peerServer = ExpressPeerServer(httpServer, {
+    debug: true,
+});
+
+app.use('/peerjs', peerServer);
+groupCallHandler.createPeerServerListener(peerServer);
 
 let peers = [];
 const broadcastEventTypes = {

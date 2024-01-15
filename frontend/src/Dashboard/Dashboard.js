@@ -8,10 +8,12 @@ import * as webRTCHandler from '../utils/webRTCHandler/webRTCHandler';
 import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
 import DirectCall from './components/ActiveUsersList/DirectCall/DirectCall';
 import DashboardInformation from './components/DashboardInformation/DashboardInformation';
+import * as webRTCGroupCallHandler from '../utils/webRTCHandler/webRTCGroupCallHandler';
 
 const Dashboard = ({ username, callState }) => {
   useEffect(() => {
     webRTCHandler.getLocalStream();
+    webRTCGroupCallHandler.connectWithMyPeer();
   }, []) 
   return (
     <div className='dashboard_container background_main_color'>
