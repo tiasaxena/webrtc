@@ -1,10 +1,11 @@
 import React from 'react';
 
-import './GroupCallRoomsList.css'
+import './GroupCallRoomsList.css';
+import * as webRTCGroupCallHandler from '../../../utils/webRTCHandler/webRTCGroupCallHandler';
 
 const GroupCallRoomsListItem = ({ room }) => {
     const handleListItemPressed = () => {
-        //Join the grp call
+      webRTCGroupCallHandler.joinGroupCall(room.socketId, room.roomId);
     }
   return (
     <div onClick={handleListItemPressed} className='group_calls_list_item'>

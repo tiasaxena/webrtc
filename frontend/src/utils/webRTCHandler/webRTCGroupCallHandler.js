@@ -29,3 +29,17 @@ export const createNewGroupCall = () => {
     store.dispatch(setGroupCallActive(true));
     store.dispatch(setCallState(callStates.CALL_IN_PROGRESS));
 }
+
+export const joinGroupCall = (hostSocketId, roomId) => {
+    const localStream = store.getState().mainReducer.call.localStream;
+
+    wss.userWantsToJoinGroupCall({
+        peerId: myPeerId,
+        hostSocketId,
+        roomId,
+        localStreamId: localStream.id,
+    });
+
+    store.dispatch(setGroupCallActive(true));
+    store.dispatch(setCallState(callStates.CALL_IN_PROGRESS));
+}

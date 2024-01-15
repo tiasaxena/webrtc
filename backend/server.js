@@ -144,6 +144,15 @@ io.on('connection', (socket) => {
         });
     });
 
+    socket.on('group-call-request', data => {
+        io.to(data.roomId).emit('group-call-request', {
+            peerId: data.peerId,
+            streamId: data.streamId,
+        });
+
+        socket.join(data.roomId);
+    });
+
     /* ____________________________________________________________________________________ */
 })
 

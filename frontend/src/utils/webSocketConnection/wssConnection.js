@@ -1,9 +1,11 @@
 //Define connection with web socket server
 
 import {io} from 'socket.io-client';
+
 import store from '../../store/store';
 import * as dashboardActions from '../../store/actions/dashboardActions';
 import * as webRTCHandler from '../webRTCHandler/webRTCHandler';
+import * as webRTCGroupCallHandler from '../webRTCHandler/webRTCGroupCallHandler';
 
 const socket = io ('http://localhost:8000/');
 
@@ -63,6 +65,13 @@ const connectWithWebSocket = () => {
   }) 
 
   /* _________________________________________________________________________________________*/
+
+   /* _________________________listeners related to group call________________________________*/
+   socket.on('group-call-request', (data) => {
+    webRTCGroupCallHandler.connectToNewUser(data);
+  });
+
+  /* _________________________________________________________________________________________*/
 };
 
 export const registerNewUser = username => {
@@ -73,9 +82,20 @@ export const registerNewUser = username => {
 };
 
 // Emitting events to server related to group calls
+// 1. Register group call
+// 2. If the user wants to join a group call
+
+/* ______________________________________________________________________________________________ */
+
 export const registerGroupCall = (data) => {
   socket.emit('register-group-call', data);
 }
+
+export const userWantsToJoinGroupCall = (data) => {
+  socket.emit('group-call-request', data);
+}
+
+/* ______________________________________________________________________________________________ */
 
 // Emitting events to server related to direct calling
 // 1. Send Pre Offer
