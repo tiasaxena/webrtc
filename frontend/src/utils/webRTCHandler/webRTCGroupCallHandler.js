@@ -1,4 +1,4 @@
-import { CALL_SET_GROUP_CALL_ACTIVE, callStates, setCallState, setGroupCall, setGroupCallActive } from '../../store/actions/callActions';
+import { callStates, setCallState, setGroupCallActive } from '../../store/actions/callActions';
 import store from '../../store/store';
 import * as wss from '../../utils/webSocketConnection/wssConnection'
 

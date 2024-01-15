@@ -3,20 +3,21 @@ import { connect } from 'react-redux';
 
 import './Dashborad.css';
 import logo from '../assets/logo.png';
+import GroupCall from './components/GroupCall/GroupCall';
 import { callStates } from '../store/actions/callActions';
 import * as webRTCHandler from '../utils/webRTCHandler/webRTCHandler';
 import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
 import DirectCall from './components/ActiveUsersList/DirectCall/DirectCall';
-import DashboardInformation from './components/DashboardInformation/DashboardInformation';
-import * as webRTCGroupCallHandler from '../utils/webRTCHandler/webRTCGroupCallHandler';
 import GroupCallRoomsList from './components/GroupCallRoomsList/GroupCallRoomsList';
-import GroupCall from './components/GroupCall/GroupCall';
+import * as webRTCGroupCallHandler from '../utils/webRTCHandler/webRTCGroupCallHandler';
+import DashboardInformation from './components/DashboardInformation/DashboardInformation';
 
 const Dashboard = ({ username, callState }) => {
   useEffect(() => {
     webRTCHandler.getLocalStream();
     webRTCGroupCallHandler.connectWithMyPeer();
-  }, []) 
+  }, []);
+
   return (
     <div className='dashboard_container background_main_color'>
       <div className='dashboard_left_section'>
@@ -43,7 +44,7 @@ const Dashboard = ({ username, callState }) => {
 
 const mapStateToProps = (state) => {
   const username = state.mainReducer.dashboard.username;
-  const callState = state.mainReducer.dashboard.callState;
+  const callState = state.mainReducer.call.callState;
   return {
     username,
     callState,

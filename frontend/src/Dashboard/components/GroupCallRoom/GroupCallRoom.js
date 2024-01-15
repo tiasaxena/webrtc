@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './GroupCallRoom.css';
-import ConversationButtons from '../ConversationButtons/ConversationButton';
+import ConversationButtons from '../ConversationButtons/ConversationButtons';
 
 const GroupCallRoom = () => {
   return (
