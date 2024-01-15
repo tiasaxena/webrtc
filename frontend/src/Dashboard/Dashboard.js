@@ -10,6 +10,7 @@ import DirectCall from './components/ActiveUsersList/DirectCall/DirectCall';
 import DashboardInformation from './components/DashboardInformation/DashboardInformation';
 import * as webRTCGroupCallHandler from '../utils/webRTCHandler/webRTCGroupCallHandler';
 import GroupCallRoomsList from './components/GroupCallRoomsList/GroupCallRoomsList';
+import GroupCall from './components/GroupCall/GroupCall';
 
 const Dashboard = ({ username, callState }) => {
   useEffect(() => {
@@ -21,6 +22,7 @@ const Dashboard = ({ username, callState }) => {
       <div className='dashboard_left_section'>
         <div className="dashboard_content_container">
           <DirectCall/>
+          <GroupCall/>
           { callState !== callStates.CALL_IN_PROGRESS && <DashboardInformation username={username}/> }
         </div>
         <div className="dashboard_rooms_container background_secondary_color">
