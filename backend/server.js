@@ -54,8 +54,8 @@ io.on('connection', (socket) => {
         peers.push({
             username: data.username,
             socketId: data.socketId
-        })
-        console.log('Registered new user', peers)
+        });
+        console.log('Registered new user', peers);
         
         // Tell all the active users that there is a new joinee
         io.sockets.emit('broadcast', {

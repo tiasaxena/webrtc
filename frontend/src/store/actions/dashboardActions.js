@@ -18,7 +18,7 @@ export const setUsername = (username) => {
 
 export const setGroupCalls = (groupCallRooms) => {
     return {
-        tyep: DASHBOARD_SET_GROUP_CALL_ROOMS,
+        type: DASHBOARD_SET_GROUP_CALL_ROOMS,
         groupCallRooms,
     }
 }

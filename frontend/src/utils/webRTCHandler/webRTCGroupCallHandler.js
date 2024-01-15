@@ -1,3 +1,4 @@
+import { CALL_SET_GROUP_CALL_ACTIVE, callStates, setCallState, setGroupCall, setGroupCallActive } from '../../store/actions/callActions';
 import store from '../../store/store';
 import * as wss from '../../utils/webSocketConnection/wssConnection'
 
@@ -23,5 +24,8 @@ export const createNewGroupCall = () => {
     wss.registerGroupCall({
         username: store.getState().mainReducer.dashboard.username,
         peerId: myPeerId,
-    })
+    });
+    // Update the store
+    store.dispatch(setGroupCallActive(true));
+    store.dispatch(setCallState(callStates.CALL_IN_PROGRESS));
 }
