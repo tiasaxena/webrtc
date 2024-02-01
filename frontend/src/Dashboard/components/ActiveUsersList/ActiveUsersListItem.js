@@ -12,7 +12,7 @@ const ActiveUsersListItem = ({ activeUser, callState }) => {
     }
   };
   return (
-    <div className="active_user_list_container" onClick={handleListItem}>
+    <div onClick={handleListItem}>
       <div className="user_list_item">
         <div className="active_user_list_image_container">
           <img

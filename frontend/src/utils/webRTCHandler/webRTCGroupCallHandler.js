@@ -20,9 +20,9 @@ export const connectWithMyPeer = () => {
     });
 
     myPeer.on('call', call => {
-        call.answer(store.getState().call.localStream);
+        call.answer(store.getState().mainReducer.call.localStream);
         call.on('stream', incomingStream => {
-            console.log('stream came');
+            console.log('stream came1');
         });
     });
 }
@@ -39,7 +39,6 @@ export const createNewGroupCall = () => {
 
 export const joinGroupCall = (hostSocketId, roomId) => {
     const localStream = store.getState().mainReducer.call.localStream;
-
     wss.userWantsToJoinGroupCall({
         peerId: myPeerId,
         hostSocketId,
@@ -56,6 +55,6 @@ export const connectToNewUser = (data) => {
 
     const call = myPeer.call(data.peerId, localStream);
     call.on('stream', incomingStream => {
-        console.log('stream came')
+        console.log('stream came2');
     })
 }
