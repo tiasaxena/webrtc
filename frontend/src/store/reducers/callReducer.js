@@ -14,6 +14,7 @@ const initialState = {
     localCameraEnabled: true,
     screenSharingActive: false,
     groupCallActive: false,
+    groupCallStreams: [],
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -77,6 +78,11 @@ const dashboardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 groupCallActive: action.active,
+            }
+        case callActions.CALL_SET_GROUP_CALL_STREAMS: 
+            return {
+                ...state,
+                groupCallStreams: action.groupCallStreams,
             }
         default: 
             return state;

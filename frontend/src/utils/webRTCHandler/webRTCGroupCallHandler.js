@@ -1,4 +1,4 @@
-import { callStates, setCallState, setGroupCallActive } from '../../store/actions/callActions';
+import { callStates, setCallState, setGroupCallActive, setGroupCallIncomingStreams } from '../../store/actions/callActions';
 import store from '../../store/store';
 import * as wss from '../../utils/webSocketConnection/wssConnection'
 
@@ -22,7 +22,11 @@ export const connectWithMyPeer = () => {
     myPeer.on('call', call => {
         call.answer(store.getState().mainReducer.call.localStream);
         call.on('stream', incomingStream => {
-            console.log('stream came1');
+            const streams = store.getState().mainReducer.call.groupCallStreams;
+            const stream = streams.find(stream => stream.id === incomingStream.id);
+            if(!stream) {
+                addVideoStream(stream);
+            }
         });
     });
 }
@@ -55,6 +59,18 @@ export const connectToNewUser = (data) => {
 
     const call = myPeer.call(data.peerId, localStream);
     call.on('stream', incomingStream => {
-        console.log('stream came2');
+        const streams = store.getState().mainReducer.call.groupCallStreams;
+        const stream = streams.find(stream => stream.id === incomingStream.id);
+        if(!stream) {
+            addVideoStream(stream);
+        }
     })
+}
+
+const addVideoStream = (incomingStream) => {
+    const groupCallStreams = [
+        ...store.getState().mainReducer.call.groupCallStreams,
+        incomingStream
+    ];
+    store.dispatch(setGroupCallIncomingStreams(groupCallStreams));
 }
