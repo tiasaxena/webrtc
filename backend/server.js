@@ -126,7 +126,7 @@ io.on('connection', (socket) => {
     
     /* ___________________ event listeners related to group call ________________________ */
 
-    socket.on('register-group-call', (data) => {
+    socket.on('group-call-register', (data) => {
         const roomId = uuid4();
         socket.join(roomId);
 
@@ -140,16 +140,17 @@ io.on('connection', (socket) => {
 
         io.sockets.emit('broadcast', {
             event: broadcastEventTypes.GROUP_CALL_ROOMS,
-            groupCallRooms: groupCallRooms,
+            groupCallRooms,
         });
     });
 
-    socket.on('group-call-request', data => {
-        io.to(data.roomId).emit('group-call-request', {
+    socket.on('group-call-join-request', (data) => {
+        console.log('inside server.js on')
+        console.log('server.js data', data)
+        io.to(data.roomId).emit('group-call-join-request', {
             peerId: data.peerId,
             streamId: data.streamId,
         });
-
         socket.join(data.roomId);
     });
 

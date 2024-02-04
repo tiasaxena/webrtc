@@ -5,9 +5,10 @@ import {io} from 'socket.io-client';
 import store from '../../store/store';
 import * as dashboardActions from '../../store/actions/dashboardActions';
 import * as webRTCHandler from '../webRTCHandler/webRTCHandler';
-import * as webRTCGroupCallHandler from '../webRTCHandler/webRTCGroupCallHandler';
+import * as webRTCGroupCallHandler
+  from '../webRTCHandler/webRTCGroupCallHandler';
 
-const socket = io ('http://localhost:8000/');
+const socket = io ('http://localhost:5000/');
 
 const broadcastEventTypes = {
   ACTIVE_USERS: 'ACTIVE_USERS',
@@ -23,7 +24,7 @@ const handleBroadcastEvents = data => {
       store.dispatch (dashboardActions.setActiveUsers (activeUsers));
       break;
     case broadcastEventTypes.GROUP_CALL_ROOMS:
-      store.dispatch(dashboardActions.setGroupCalls(data.groupCallRooms))
+      store.dispatch (dashboardActions.setGroupCalls (data.groupCallRooms));
       break;
     default:
       break;
@@ -40,35 +41,37 @@ const connectWithWebSocket = () => {
   });
 
   /* _________________________listeners related to direct call________________________________*/
-  socket.on('pre-offer', (data) => {
-    webRTCHandler.handlePreOffer(data);
-  })
+  socket.on ('pre-offer', data => {
+    webRTCHandler.handlePreOffer (data);
+  });
 
-  socket.on('pre-offer-answer', data => {
-    webRTCHandler.handlePreOfferAnswer(data);
-  })
+  socket.on ('pre-offer-answer', data => {
+    webRTCHandler.handlePreOfferAnswer (data);
+  });
 
-  socket.on('webRTC-offer', data => {
-    webRTCHandler.handleWebRTCOffer(data);
-  })
+  socket.on ('webRTC-offer', data => {
+    webRTCHandler.handleWebRTCOffer (data);
+  });
 
-  socket.on('webRTC-answer', data => {
-    webRTCHandler.handleWebRTCAnswer(data);
-  })
+  socket.on ('webRTC-answer', data => {
+    webRTCHandler.handleWebRTCAnswer (data);
+  });
 
-  socket.on('ICE-candidate', data => {
-    webRTCHandler.handleICECandidate(data);
-  })
+  socket.on ('ICE-candidate', data => {
+    webRTCHandler.handleICECandidate (data);
+  });
 
-  socket.on('user-hang-up', () => {
-      webRTCHandler.handleUserHangedUp();
-  }) 
+  socket.on ('user-hang-up', () => {
+    webRTCHandler.handleUserHangedUp ();
+  });
 
   /* _________________________________________________________________________________________*/
 
   /* _________________________listeners related to group call________________________________*/
-   socket.on('group-call-request', (data) => {
-    webRTCGroupCallHandler.connectToNewUser(data);
+  socket.on ('group-call-join-request', data => {
+    console.log ('inside wss on');
+    console.log ('wss data', data);
+    webRTCGroupCallHandler.connectToNewUser (data);
   });
 
   /* _________________________________________________________________________________________*/
@@ -87,13 +90,15 @@ export const registerNewUser = username => {
 
 /* ______________________________________________________________________________________________ */
 
-export const registerGroupCall = (data) => {
-  socket.emit('register-group-call', data);
-}
+export const registerGroupCall = data => {
+  socket.emit ('group-call-register', data);
+};
 
-export const userWantsToJoinGroupCall = (data) => {
-  socket.emit('group-call-request', data);
-}
+export const userWantsToJoinGroupCall = data => {
+  console.log ('inside wss emit');
+  console.log ('wss data', data);
+  socket.emit ('group-call-join-request', data);
+};
 
 /* ______________________________________________________________________________________________ */
 
@@ -102,34 +107,34 @@ export const userWantsToJoinGroupCall = (data) => {
 // 2. Pre Offer Answer
 // 3. Send WebRTCOffer
 // 4. Send WebRTAnswer
-// 5. Send ICE Candidate 
+// 5. Send ICE Candidate
 // 6. User Hangs Up
 
 /* ______________________________________________________________________________________________ */
 
-export const sendPreOffer = (data) => {
-  socket.emit('pre-offer', data);
-}
+export const sendPreOffer = data => {
+  socket.emit ('pre-offer', data);
+};
 
-export const sendPreOfferAnswer = (data) => {
-  socket.emit('pre-offer-answer', data);
-}
+export const sendPreOfferAnswer = data => {
+  socket.emit ('pre-offer-answer', data);
+};
 
-export const sendWebRTCOffer = (data) => {
-  socket.emit('webRTC-offer', data);
-}
+export const sendWebRTCOffer = data => {
+  socket.emit ('webRTC-offer', data);
+};
 
-export const sendWebRTCAnswer = (data) => {
-  socket.emit('webRTC-answer', data);
-}
+export const sendWebRTCAnswer = data => {
+  socket.emit ('webRTC-answer', data);
+};
 
-export const sendICECandidate = (data) => {
-  socket.emit('ICE-candidate', data);
-}
+export const sendICECandidate = data => {
+  socket.emit ('ICE-candidate', data);
+};
 
-export const sendUserHangedUp = (data) => {
-  socket.emit('user-hang-up', data);
-}
+export const sendUserHangedUp = data => {
+  socket.emit ('user-hang-up', data);
+};
 
 /* ______________________________________________________________________________________________ */
 

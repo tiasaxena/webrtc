@@ -11,7 +11,7 @@ export const connectWithMyPeer = () => {
     myPeer = new window.Peer( undefined, {
         path: '/peerjs',
         host: '/',
-        port: '8000',
+        port: '5000',
     } );
 
     myPeer.on('open', (id) => {
@@ -23,9 +23,10 @@ export const connectWithMyPeer = () => {
         call.answer(store.getState().mainReducer.call.localStream);
         call.on('stream', incomingStream => {
             const streams = store.getState().mainReducer.call.groupCallStreams;
+            console.log('streams', streams)
             const stream = streams.find(stream => stream.id === incomingStream.id);
             if(!stream) {
-                addVideoStream(stream);
+                addVideoStream(incomingStream);
             }
         });
     });
@@ -42,7 +43,9 @@ export const createNewGroupCall = () => {
 }
 
 export const joinGroupCall = (hostSocketId, roomId) => {
+    console.log('INside join group call handler', hostSocketId, roomId);
     const localStream = store.getState().mainReducer.call.localStream;
+    console.log('local stream join group call', localStream)
     wss.userWantsToJoinGroupCall({
         peerId: myPeerId,
         hostSocketId,
@@ -55,14 +58,17 @@ export const joinGroupCall = (hostSocketId, roomId) => {
 }
 
 export const connectToNewUser = (data) => {
+    console.log('connect to new user webrtcgroup', data);
     const localStream = store.getState().mainReducer.call.localStream;
-
+    console.log('localStream', localStream)
     const call = myPeer.call(data.peerId, localStream);
+    console.log('call webrtcgroup', call);
     call.on('stream', incomingStream => {
         const streams = store.getState().mainReducer.call.groupCallStreams;
+        console.log('streams', streams);
         const stream = streams.find(stream => stream.id === incomingStream.id);
         if(!stream) {
-            addVideoStream(stream);
+            addVideoStream(incomingStream);
         }
     })
 }

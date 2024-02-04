@@ -13,7 +13,10 @@ import {
 import * as wss from '../webSocketConnection/wssConnection';
 
 const DEFAULT_CONSTRAINTS = {
-  video: true,
+  video: {
+    width: 480,
+    height: 360,
+  },
   audio: true,
 };
 

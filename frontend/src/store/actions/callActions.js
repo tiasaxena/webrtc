@@ -97,7 +97,7 @@ export const setGroupCallActive = (active) => {
     }
 }
 
-export const setGroupCallIncomingStreams = groupCallStreams => {
+export const setGroupCallIncomingStreams = (groupCallStreams) => {
     return {
         type: CALL_SET_GROUP_CALL_STREAMS,
         groupCallStreams,
