@@ -145,14 +145,21 @@ io.on('connection', (socket) => {
     });
 
     socket.on('group-call-join-request', (data) => {
-        console.log('inside server.js on')
-        console.log('server.js data', data)
         io.to(data.roomId).emit('group-call-join-request', {
             peerId: data.peerId,
             streamId: data.streamId,
         });
         socket.join(data.roomId);
     });
+
+    socket.on('group-call-user-left', data => {
+        socket.leave(data.roomId);
+
+        // Inform other users that the specific user left
+        io.to(data.roomId).emit('group-call-user-left', {
+            streamId: data.streamId,
+        })
+    })
 
     /* ____________________________________________________________________________________ */
 })

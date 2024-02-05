@@ -69,10 +69,12 @@ const connectWithWebSocket = () => {
 
   /* _________________________listeners related to group call________________________________*/
   socket.on ('group-call-join-request', data => {
-    console.log ('inside wss on');
-    console.log ('wss data', data);
     webRTCGroupCallHandler.connectToNewUser (data);
   });
+
+  socket.on('group-call-user-left', data => {
+    webRTCGroupCallHandler.removeInactiveStream(data)
+  })
 
   /* _________________________________________________________________________________________*/
 };
@@ -87,6 +89,7 @@ export const registerNewUser = username => {
 // Emitting events to server related to group calls
 // 1. Register group call
 // 2. If the user wants to join a group call
+// 3. When any user leaves the group call 
 
 /* ______________________________________________________________________________________________ */
 
@@ -95,10 +98,12 @@ export const registerGroupCall = data => {
 };
 
 export const userWantsToJoinGroupCall = data => {
-  console.log ('inside wss emit');
-  console.log ('wss data', data);
   socket.emit ('group-call-join-request', data);
 };
+
+export const userLeftGroupCall = data => {
+  socket.emit('group-call-user-left', data);
+}
 
 /* ______________________________________________________________________________________________ */
 

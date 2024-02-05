@@ -1,10 +1,11 @@
-import { callStates, setCallState, setGroupCallActive, setGroupCallIncomingStreams } from '../../store/actions/callActions';
+import { callStates, clearGroupCallData, setCallState, setGroupCallActive, setGroupCallIncomingStreams } from '../../store/actions/callActions';
 import store from '../../store/store';
 import * as wss from '../../utils/webSocketConnection/wssConnection'
 
 // Create a connection to the peer server in backend
 let myPeer;
 let myPeerId;
+let groupCallRoomId;
 
 export const connectWithMyPeer = () => {
     // undefined(first param) tells that peer server will create client ids for us on its own
@@ -43,9 +44,9 @@ export const createNewGroupCall = () => {
 }
 
 export const joinGroupCall = (hostSocketId, roomId) => {
-    console.log('INside join group call handler', hostSocketId, roomId);
     const localStream = store.getState().mainReducer.call.localStream;
-    console.log('local stream join group call', localStream)
+    groupCallRoomId = roomId;
+
     wss.userWantsToJoinGroupCall({
         peerId: myPeerId,
         hostSocketId,
@@ -78,5 +79,25 @@ const addVideoStream = (incomingStream) => {
         ...store.getState().mainReducer.call.groupCallStreams,
         incomingStream
     ];
+    store.dispatch(setGroupCallIncomingStreams(groupCallStreams));
+}
+
+export const leaveGroupCall = () => {
+    wss.userLeftGroupCall({
+        streamId: store.getState().mainReducer.call.localStream.id,
+        roomId: groupCallRoomId,
+    });
+
+    groupCallRoomId = null;
+    store.dispatch(clearGroupCallData());
+    myPeer.destroy();
+    connectWithMyPeer();
+}
+
+export const removeInactiveStream = (data) => {
+    const groupCallStreams = store.getState().mainReducer.call.groupCallStreams.filter(
+        stream => stream.id !== data.streamId
+    );
+
     store.dispatch(setGroupCallIncomingStreams(groupCallStreams));
 }

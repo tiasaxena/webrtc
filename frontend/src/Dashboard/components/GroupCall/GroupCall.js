@@ -11,10 +11,15 @@ const GroupCall = ({ callState, localStream, groupCallActive, groupCallStreams }
     webRTCGroupCallHandler.createNewGroupCall();
   };
 
+  const handleLeaveRoom = () => {
+    webRTCGroupCallHandler.leaveGroupCall();
+  }
+
   return (
   <>
     { !groupCallActive && localStream && callState !== callStates.CALL_IN_PROGRESS && <GroupCallButton onClickHandler={createRoom} label='Create room'/> }
     { groupCallActive && <GroupCallRoom groupCallStreams={groupCallStreams} />}
+    { groupCallActive && <GroupCallButton onClickHandler={handleLeaveRoom} label='Leave Room' /> }
   </>
     );
 };
