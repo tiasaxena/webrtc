@@ -4,7 +4,8 @@ import './GroupCallRoom.css';
 import ConversationButtons from '../ConversationButtons/ConversationButtons';
 import GroupCallVideo from './GroupCallVideo';
 
-const GroupCallRoom = ({ groupCallStreams }) => {
+const GroupCallRoom = (props) => {
+  const { groupCallStreams } = props;
   return (
     <div className="group_call_room_container">
       <span className="group_call_title">
@@ -17,7 +18,8 @@ const GroupCallRoom = ({ groupCallStreams }) => {
           })
         }
       </div>
-      <ConversationButtons />
+      {/* groupCall === groupCall={true} */}
+      <ConversationButtons {...props} groupCall />
     </div>
   );
 };

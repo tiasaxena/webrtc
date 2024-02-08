@@ -78,6 +78,13 @@ io.on('connection', (socket) => {
             event: broadcastEventTypes.ACTIVE_USERS,
             activeUsers: peers,
         });
+
+        // handling the case if the connected person in a group call is the owner of a room
+        groupCallRooms = groupCallRooms.filter(room => room.socketId !== socket.id);
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.GROUP_CALL_ROOMS,
+            groupCallRooms
+        });
     });
 
     /* ___________________ event listeners related to direct call ________________________ */

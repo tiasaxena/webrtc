@@ -90,6 +90,8 @@ const dashboardReducer = (state = initialState, action) => {
                 groupCallActive: false,
                 groupCallStreams: [],
                 callState: callActions.callStates.CALL_AVAILABLE,
+                localMicrophoneEnabled: true,
+                localCameraEnabled: true,
             }
         default: 
             return state;

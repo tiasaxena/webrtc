@@ -100,6 +100,10 @@ export const clearGroupCallDataHelper = () => {
     store.dispatch(clearGroupCallData());
     myPeer.destroy();
     connectWithMyPeer();
+    
+    const localStream = store.getState().mainReducer.call.localStream;
+    localStream.getVideoTracks()[0].enabled = true;
+    localStream.getAudioTracks()[0].enabled = true;
 }
 
 export const removeInactiveStream = (data) => {
