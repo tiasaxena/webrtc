@@ -30,6 +30,7 @@ const preOfferAnswers = {
 
 let connectedUserSocketId;
 let peerConnection;
+let dataChannel;
 const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
 
 export const getLocalStream = () => {
@@ -63,6 +64,26 @@ const createPeerConnection = () => {
   peerConnection.ontrack = ({streams: [stream]}) => {
     store.dispatch (setRemoteStream (stream));
   };
+
+  // Incoming data channel messages, on the receiver's side
+  peerConnection.ondatachannel = event => {
+    const dataChannel = event.channel;
+
+    dataChannel.onopen = () => {
+      console.log('Peer connection is ready to receive data channel messages');
+    };
+
+    dataChannel.onmessage = event => {
+
+    };
+  }
+
+  // Data channel from the sender's end
+  dataChannel = peerConnection.createDataChannel('chat');
+  dataChannel.onopen = () => {
+    console.log('chat data channel opened!');
+  }
+
   // Event listner when we get the ICE candidates from the stun server we defined above
   peerConnection.onicecandidate = event => {
     console.log ('Getting candidates from STUN server.', event.candidate);
