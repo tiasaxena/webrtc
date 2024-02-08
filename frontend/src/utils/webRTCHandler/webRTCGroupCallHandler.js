@@ -6,6 +6,7 @@ import * as wss from '../../utils/webSocketConnection/wssConnection'
 let myPeer;
 let myPeerId;
 let groupCallRoomId;
+let groupCallHost = false;
 
 export const connectWithMyPeer = () => {
     // undefined(first param) tells that peer server will create client ids for us on its own
@@ -24,7 +25,6 @@ export const connectWithMyPeer = () => {
         call.answer(store.getState().mainReducer.call.localStream);
         call.on('stream', incomingStream => {
             const streams = store.getState().mainReducer.call.groupCallStreams;
-            console.log('streams', streams)
             const stream = streams.find(stream => stream.id === incomingStream.id);
             if(!stream) {
                 addVideoStream(incomingStream);
@@ -34,6 +34,7 @@ export const connectWithMyPeer = () => {
 }
 
 export const createNewGroupCall = () => {
+    groupCallHost = true;
     wss.registerGroupCall({
         username: store.getState().mainReducer.dashboard.username,
         peerId: myPeerId,
@@ -59,14 +60,10 @@ export const joinGroupCall = (hostSocketId, roomId) => {
 }
 
 export const connectToNewUser = (data) => {
-    console.log('connect to new user webrtcgroup', data);
     const localStream = store.getState().mainReducer.call.localStream;
-    console.log('localStream', localStream)
     const call = myPeer.call(data.peerId, localStream);
-    console.log('call webrtcgroup', call);
     call.on('stream', incomingStream => {
         const streams = store.getState().mainReducer.call.groupCallStreams;
-        console.log('streams', streams);
         const stream = streams.find(stream => stream.id === incomingStream.id);
         if(!stream) {
             addVideoStream(incomingStream);
@@ -83,12 +80,23 @@ const addVideoStream = (incomingStream) => {
 }
 
 export const leaveGroupCall = () => {
-    wss.userLeftGroupCall({
-        streamId: store.getState().mainReducer.call.localStream.id,
-        roomId: groupCallRoomId,
-    });
+    if(groupCallHost) {
+        wss.groupCallClosedByHost({
+            peerId: myPeerId
+        })
+    } else {
+        wss.userLeftGroupCall({
+            streamId: store.getState().mainReducer.call.localStream.id,
+            roomId: groupCallRoomId,
+        });
+    }
 
+    clearGroupCallDataHelper();
+}
+
+export const clearGroupCallDataHelper = () => {
     groupCallRoomId = null;
+    groupCallHost = null;
     store.dispatch(clearGroupCallData());
     myPeer.destroy();
     connectWithMyPeer();
@@ -100,4 +108,12 @@ export const removeInactiveStream = (data) => {
     );
 
     store.dispatch(setGroupCallIncomingStreams(groupCallStreams));
+}
+
+export const checkActiveGroupCall = () => {
+    if(store.getState().mainReducer.call.groupCallActive) {
+        return groupCallRoomId;
+    } else {
+        return false;
+    }
 }
