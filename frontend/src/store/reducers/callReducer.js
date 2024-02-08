@@ -15,6 +15,10 @@ const initialState = {
     screenSharingActive: false,
     groupCallActive: false,
     groupCallStreams: [],
+    message: {
+        received: false,
+        content: ''
+    }
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -92,6 +96,11 @@ const dashboardReducer = (state = initialState, action) => {
                 callState: callActions.callStates.CALL_AVAILABLE,
                 localMicrophoneEnabled: true,
                 localCameraEnabled: true,
+            }
+        case callActions.CALL_SET_CHAT_MESSAGE:
+            return {
+                ...state,
+                message: action.message,
             }
         default: 
             return state;

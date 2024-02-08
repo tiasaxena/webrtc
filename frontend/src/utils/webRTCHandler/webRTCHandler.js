@@ -7,6 +7,7 @@ import {
   setCallerUsername,
   setCallingDialogVisible,
   setLocalStream,
+  setMessage,
   setRemoteStream,
   setScreenSharingActive,
 } from '../../store/actions/callActions';
@@ -68,17 +69,16 @@ const createPeerConnection = () => {
   // Incoming data channel messages, on the receiver's side
   peerConnection.ondatachannel = event => {
     const dataChannel = event.channel;
-
+    
     dataChannel.onopen = () => {
       console.log('Peer connection is ready to receive data channel messages');
     };
-
-    dataChannel.onmessage = event => {
-
+    dataChannel.onmessage = (event) => {
+      store.dispatch(setMessage(event.data));
     };
   }
 
-  // Data channel from the sender's end
+  // Data channel from the sender's end, named 'chat'
   dataChannel = peerConnection.createDataChannel('chat');
   dataChannel.onopen = () => {
     console.log('chat data channel opened!');
@@ -309,3 +309,7 @@ export const resetCallData = () => {
   connectedUserSocketId = null;
   store.dispatch (setCallState (callStates.CALL_AVAILABLE));
 };
+
+export const sendMessageUsingDataChannel = message => {
+  dataChannel.send(message);
+}

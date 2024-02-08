@@ -37,14 +37,11 @@ const ConversationButtons = props => {
     screenSharingActive,
     groupCall
   } = props;
-  console.log('props', props)
 
   const handleMicButtonPressed = () => {
     const micEnabled = localMicrophoneEnabled;
     localStream.getAudioTracks()[0].enabled = !micEnabled;
     setMicrophoneEnabled(!micEnabled);
-    console.log('setMicrophoneEnabled', localMicrophoneEnabled)
-    console.log('mic enabled', micEnabled)
   }
 
   const handleVideoButtonPressed = () => {

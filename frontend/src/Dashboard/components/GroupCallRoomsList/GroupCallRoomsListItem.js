@@ -5,7 +5,6 @@ import * as webRTCGroupCallHandler
   from '../../../utils/webRTCHandler/webRTCGroupCallHandler';
 
 const GroupCallRoomsListItem = ({room}) => {
-  console.log('room', room);
   
   const handleListItemPressed = () => {
     webRTCGroupCallHandler.joinGroupCall (room.socketId, room.roomId);
