@@ -74,7 +74,7 @@ const createPeerConnection = () => {
       console.log('Peer connection is ready to receive data channel messages');
     };
     dataChannel.onmessage = (event) => {
-      store.dispatch(setMessage(event.data));
+      store.dispatch(setMessage(true, event.data));
     };
   }
 
