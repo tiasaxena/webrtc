@@ -57,8 +57,8 @@ const createPeerConnection = () => {
   // Get access to local stream
   // We will add to our peer connection the tracks which are included in the local stream, which are the audio and the video track
   const localStream = store.getState ().mainReducer.call.localStream;
-  for (const track of localStream.getTracks ()) {
-    peerConnection.addTrack (track, localStream);
+  for (const track of localStream.getTracks ()) { // This gets all the media tracks (both audio and video) from your local stream.
+    peerConnection.addTrack (track, localStream); // Each track (audio or video) is added to the peerConnection, meaning it will be sent to the other peer you're communicating with.
   }
 
   // Event listener when other users connect, we get their streams
@@ -246,19 +246,25 @@ export const checkIfCallIsPossible = () => {
 let screenSharingStream;
 
 export const switchForScreenSharingSystem = async () => {
+  //check if some screen is aldready being shared
   if (!store.getState ().mainReducer.call.screenSharingActive) {
     // Screen share the activities of the person
     try {
+      // start screen sharing, prompts the user to select a screen or a window to share
       screenSharingStream = await navigator.mediaDevices.getDisplayMedia ({
         video: true,
       });
       store.dispatch (setScreenSharingActive (true));
 
+      // "senders" refers to the objects that manage the media tracks being sent to a remote peer (another user) in a WebRTC connection.
+      // getSenders() -> Retrieves the list of RTCRtpSender objects from the peerConnection. These objects manage the media tracks being sent to the remote peer.
       const senders = peerConnection.getSenders ();
       const sender = senders.find (
         sender =>
+          // Searches for the sender responsible for the video track by matching the kind of track (e.g., video)
           sender.track.kind === screenSharingStream.getVideoTracks ()[0].kind
       );
+      // Replaces the current video track being sent to the remote peer with the screen sharing video track.
       sender.replaceTrack (screenSharingStream.getVideoTracks ()[0]);
     } catch (err) {
       console.error ('Error while getting screen sharing stream', err);
@@ -272,7 +278,7 @@ export const switchForScreenSharingSystem = async () => {
     );
     sender.replaceTrack (localStream.getVideoTracks ()[0]);
     store.dispatch (setScreenSharingActive (false));
-
+    // Stops all tracks in the screen sharing stream to release system resources and end the screen capture.
     screenSharingStream.getTracks ().forEach (track => track.stop ());
   }
 };

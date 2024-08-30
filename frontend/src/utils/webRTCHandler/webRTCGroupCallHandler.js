@@ -15,17 +15,22 @@ export const connectWithMyPeer = () => {
         host: '/',
         port: '5000',
     } );
-
+    
+    // The PeerServer helps clients (peers) find each other on the network. When a client connects to the PeerServer, it is assigned a unique identifier (peer ID). This ID can then be shared with other peers to establish a connection.The PeerServer helps clients (peers) find each other on the network. When a client connects to the PeerServer, it is assigned a unique identifier (peer ID). This ID can then be shared with other peers to establish a connection.
     myPeer.on('open', (id) => {
         console.log("Sucessfully connected to the peer server", id);
         myPeerId = id;
     });
 
+    // listen from incoming call form other peers
     myPeer.on('call', call => {
+        // prepare your video stream as an answer to the incoming call
         call.answer(store.getState().mainReducer.call.localStream);
+        // handling the incoming streams
         call.on('stream', incomingStream => {
             const streams = store.getState().mainReducer.call.groupCallStreams;
             const stream = streams.find(stream => stream.id === incomingStream.id);
+            // check if the stream is already added
             if(!stream) {
                 addVideoStream(incomingStream);
             }

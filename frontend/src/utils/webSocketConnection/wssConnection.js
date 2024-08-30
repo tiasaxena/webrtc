@@ -25,10 +25,12 @@ const handleBroadcastEvents = data => {
       break;
     case broadcastEventTypes.GROUP_CALL_ROOMS:
       const groupCallRooms = data.groupCallRooms.filter(room => room.socketId !== socket.id);
+      console.log('group call rooms', groupCallRooms);
       const activeGroupCallRoomId = webRTCGroupCallHandler.checkActiveGroupCall();
 
       if(activeGroupCallRoomId) {
         const room = groupCallRooms.find(room => room.roomId === activeGroupCallRoomId);
+        console.log(localStorage.getItem('username'), 'active group call room', room);
         if(!room) {
           webRTCGroupCallHandler.clearGroupCallDataHelper();
         }
