@@ -9,6 +9,7 @@
     justify-content: center;
     flex-direction: column;
     border-radius: 8px;
+    font-size: 1.5rem;
 }
 
 .direct_call_dialog_caller_name {

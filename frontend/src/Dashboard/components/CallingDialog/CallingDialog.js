@@ -23,7 +23,7 @@ const CallingDialog = () => {
   }
   return (
     <div className="direct_calling_dialog background_secondary_color">
-      <span>Calling</span>
+      <span><span style={{color: "green"}}>&#8599; </span> Calling</span>
       <div style={styles.buttonContainer} onClick={handleHangUpPressed}>
         <MdCallEnd style={{ width: '20px', height: '20px', fill: '#xE6E5E8' }}/>
       </div>

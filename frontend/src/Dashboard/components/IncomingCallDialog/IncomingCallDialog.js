@@ -14,7 +14,7 @@ const IncomingCallDialog = ({callerUsername}) => {
 
   return (
     <div className="direct_call_dialog background_secondary_color">
-      <div className="direct_call_dialog_caller_name">{callerUsername}</div>
+      <div className="direct_call_dialog_caller_name"> <span style={{color: "green"}}>&#8600;</span> {callerUsername}</div>
       <div className="direct_call_dialog_button_conatiner">
         <button
           className="direct_call_dialog_accept_button"

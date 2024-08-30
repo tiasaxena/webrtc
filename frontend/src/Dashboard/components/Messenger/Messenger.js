@@ -21,7 +21,7 @@ const Messenger = ({ message, setDirectCallMessage }) => {
             setDirectCallMessage(false, '');
         }, [3000])
     }
-  }, [message.received])
+  }, [message.received, setDirectCallMessage])
 
   return (
     <>

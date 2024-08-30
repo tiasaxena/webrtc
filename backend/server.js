@@ -19,16 +19,16 @@ app.use((req, res, next) => {
 
 //express server
 const httpServer = createServer(app);
-// web socket server
+// web socket server for direct calls
 const io = new Server(httpServer, { 
     cors: {
         origin: "*",
         methods: ['GET', 'POST'],
         },
 });
-// Peer Server
+// Peer Server for group calls
 const peerServer = ExpressPeerServer(httpServer, {
-    debug: true,
+    debug: true, // enables detailed loggings
 });
 
 app.use('/peerjs', peerServer);
@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
     //emit to the user we just connected with the frontend application
     socket.emit('connection', null);
     //io provides unique id to the different users we are connecting with
-    // console.log('User connected with id: ', socket.id);
+    console.log('User connected with id: ', socket.id);
 
     //event-listener
     socket.on('register-new-user', (data) => {
